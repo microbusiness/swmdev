@@ -15,3 +15,5 @@ use Illuminate\Database\Eloquent\Builder;
 */
 
 Route::get('/users', ['uses' => 'UserController@apiUserSearch', 'as' => 'user.search']);
+
+Route::get('/usersmap', ['uses' => 'UserController@apiUserMap', 'as' => 'user.map']);

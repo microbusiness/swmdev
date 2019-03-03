@@ -39,4 +39,37 @@ class UserController extends Controller
 
         return $users;
     }
+
+    /**
+     * Show the profile for the given user.
+     *
+     * @param  Illuminate\Http\Request $request
+     * @return Response
+     */
+    public function apiUserMap(Request $request)
+    {
+        $data=$request->query->all();
+        $users = $this->users->search($data);
+
+        $userList=[
+            'type'=>'FeatureCollection',
+            'features'=>[]
+        ];
+
+        foreach ($users as $item){
+            $userList['features'][]=[
+                'type'=>"Feature",
+                'properties'=>['name'=>$item->name],
+                'geometry'=>[
+                    'type'=>'Point',
+                    'icon'=>'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
+                    'coordinates'=>[$item->position->getLat(),$item->position->getLng()]
+                ]
+            ];
+        }
+
+
+
+        return json_encode($userList);
+    }
 }

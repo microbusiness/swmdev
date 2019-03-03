@@ -12,5 +12,5 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('welcome',['mapskey'=>env('GOOGLE_MAPS_API')]);
 });

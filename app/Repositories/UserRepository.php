@@ -70,6 +70,8 @@ class UserRepository
                         $arr[]=$item->id;
                         return $arr;
                     }));
+                } else {
+                    $qb->whereIn('users.id',[-1]);
                 }
             }
 

@@ -66,7 +66,7 @@ class UserRepository
                 $sql="SELECT id FROM users WHERE  position @ ST_MakeEnvelope (:xmin, :ymin, :xmax, :ymax,4326)";
                 $usersIdsByPosition= DB::select($sql,['xmin'=>$seLng,'ymin'=>$seLat,'xmax'=>$nwLng,'ymax'=>$nwLat]);
                 if (count($usersIdsByPosition)!=0){
-                    $qb->whereIn('id',array_reduce($usersIdsByPosition,function ($arr,$item){
+                    $qb->whereIn('users.id',array_reduce($usersIdsByPosition,function ($arr,$item){
                         $arr[]=$item->id;
                         return $arr;
                     }));

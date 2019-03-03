@@ -25,4 +25,6 @@ php artisan db:seed
 
 Test route
 
-http://swm.plto.ru/api/users?geo_location[nw][lat]=10&geo_location[nw][lng]=10&geo_location[se][lat]=-10&geo_location[se][lng]=-10&age[from]=18&age[to]=50&gender=male&hobby[]=football&hobby[]=snowboarding
+No validation for bbox coordinates
+
+http://swm.plto.ru/api/users?geo_location[nw][lat]=50&geo_location[nw][lng]=50&geo_location[se][lat]=-50&geo_location[se][lng]=-50&age[from]=18&age[to]=50&gender=female&hobby[]=football&hobby[]=snowboarding

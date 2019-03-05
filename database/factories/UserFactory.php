@@ -31,12 +31,14 @@ $factory->define(User::class, function (Faker $faker) {
       'Fumiko'
     ];
 
-    // Получаем на каждом пользователе - допустимо только на одноразовых скриптах
-    $genderList=Gender::all();
-    $gender=[];
-    foreach ($genderList as $item){
-        $gender[]=$item->id;
-    }
+    $gender=[true,false];
+
+    $hobby = App\Models\Hobby::all();
+
+    $hobbyIds=$hobby->random(rand(1, 4))->pluck('id')->toArray();
+    $hobbyIds=array_map(function ($a){
+        return (string)$a;
+    },$hobbyIds);
 
     $arrayMinus=[1,-1];
     $lat=(rand(0,8899999)/100000)*$arrayMinus[rand(0,1)];
@@ -49,7 +51,8 @@ $factory->define(User::class, function (Faker $faker) {
         'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
         'remember_token' => Str::random(10),
         'date_of_birth'=>new \DateTime('19'.rand(10,90).'-0'.rand(1,9).'-'.rand(10,28)),
-        'gender_id'=>$gender[rand(0,count($gender)-1)],
+        'male'=>$gender[rand(0,count($gender)-1)],
+        'data'=>['hobby'=>$hobbyIds],
         'position'=>$point
     ];
 });

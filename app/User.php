@@ -7,11 +7,13 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Phaza\LaravelPostgis\Eloquent\PostgisTrait;
 use Phaza\LaravelPostgis\Geometries\Point;
+use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 class User extends Authenticatable
 {
     use Notifiable;
     use PostgisTrait;
+    use HasJsonRelationships;
 
     /**
      * The attributes that are mass assignable.
@@ -38,6 +40,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'data'=>'json'
     ];
 
     protected $postgisFields = [
@@ -51,16 +54,8 @@ class User extends Authenticatable
       ]
     ];
 
-    /**
-     * Get the gender for the user .
-     */
-    public function gender()
-    {
-        return $this->belongsTo('App\Models\Gender');
-    }
-
     public function hobby()
     {
-        return $this->belongsToMany('App\Models\Hobby','users_hobby','users_id','hobby_id');
+        return $this->belongsToJson('App\Models\Hobby','data->hobby');
     }
 }

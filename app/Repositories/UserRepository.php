@@ -18,6 +18,14 @@ class UserRepository
 
     public function search($data)
     {
+        $gender=['male'=>true,'famale'=>false];
+
+        $hobby = \App\Models\Hobby::all();
+        $hobbyList=[];
+        foreach ($hobby as $hobbyItem){
+            $hobbyList[$hobbyItem->name]=$hobbyItem->id;
+        }
+
         /**
          * @var Builder $qb
          */
@@ -35,17 +43,30 @@ class UserRepository
             }
         }
         if (array_key_exists('gender',$data)){
-            $qb->join('gender','gender.id','=','users.gender_id');
-            $qb->where('gender.name',$data['gender']);
+            if (array_key_exists($data['gender'],$gender)){
+                $qb->where('male',$gender[$data['gender']]);
+            }
         }
+
         if (array_key_exists('hobby',$data)){
-            $qb->whereHas('hobby', function ($q) use ($data){
-                $q->whereIn('name',$data['hobby']);
-            });
-            $qb->with(array('hobby'=>function($query){
-                $query->select('hobby.name')->pluck('hobby.name');
-            }));
+            $hobbyIds=[];
+            foreach ($data['hobby'] as $searchHobby){
+                if (array_key_exists($searchHobby,$hobbyList)){
+                    $hobbyIds[]="jsonb_exists(data->'hobby','".$hobbyList[$searchHobby]."')";
+                }
+            }
+            if (count($hobbyIds)!=0){
+                $sql="select id from users where ".implode(" or ",$hobbyIds);
+                $usersIdsByPosition= DB::select($sql);
+                if (count($usersIdsByPosition)!=0){
+                    $qb->whereIn('users.id',array_reduce($usersIdsByPosition,function ($arr,$item){
+                        $arr[]=$item->id;
+                        return $arr;
+                    }));
+                }
+            }
         }
+        
         if (array_key_exists('geo_location',$data)){
             $isPrepare=false;
             if ((array_key_exists('nw',$data['geo_location']))&&(array_key_exists('se',$data['geo_location']))){

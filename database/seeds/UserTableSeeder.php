@@ -11,11 +11,6 @@ class UserTableSeeder extends Seeder
      */
     public function run()
     {
-        $hobby = App\Models\Hobby::all();
-        factory(App\User::class, 100)->create()->each(function (\App\User $user) use ($hobby) {
-            $user->hobby()->attach(
-              $hobby->random(rand(1, 4))->pluck('id')->toArray()
-            );
-        });
+        factory(App\User::class, 100)->create();
     }
 }
